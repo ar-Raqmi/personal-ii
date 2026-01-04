@@ -52,7 +52,7 @@ RippleButton {
         anchors.centerIn: parent
         width: 19.5
         height: 19.5
-        source: Config.options.bar.topLeftIcon == 'distro' ? SystemInfo.distroIcon : `${Config.options.bar.topLeftIcon}-symbolic`
+        source: "miuLogo.svg"
         colorize: true
         color: Appearance.colors.colOnLayer0
 
