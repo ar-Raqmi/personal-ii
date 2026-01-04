@@ -9,7 +9,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
-Item {
+FocusScope {
     id: root
     // Removed anchors.fill: parent because it's in a SwipeView
 
@@ -42,9 +42,21 @@ Item {
             if (GlobalStates.sidebarLeftOpen) {
                 searchInput.text = ""
                 root.query = ""
-                searchInput.forceActiveFocus()
+                focusTimer.restart();
             }
         }
+    }
+    
+    onActiveFocusChanged: {
+        if (activeFocus) {
+            focusTimer.restart();
+        }
+    }
+
+    Timer {
+        id: focusTimer
+        interval: 100 // Increased delay for better reliability
+        onTriggered: searchInput.forceActiveFocus()
     }
 
     ColumnLayout {
@@ -111,7 +123,10 @@ Item {
                     implicitWidth: 24
                     implicitHeight: 24
                     buttonRadius: Appearance.rounding.full
-                    onClicked: searchInput.text = ""
+                    onClicked: {
+                        searchInput.text = ""
+                        searchInput.forceActiveFocus()
+                    }
                     MaterialSymbol {
                         anchors.centerIn: parent
                         text: "close"
@@ -135,14 +150,19 @@ Item {
             highlightFollowsCurrentItem: true
 
             Keys.onPressed: (event) => {
-                if (event.key === Qt.Key_Up && appGrid.currentIndex < 4) {
-                    searchInput.forceActiveFocus();
-                    event.accepted = true;
+                if (event.key === Qt.Key_Up) {
+                    // Navigate to search if in the top row
+                    if (appGrid.currentIndex < 4) {
+                        searchInput.forceActiveFocus();
+                        event.accepted = true;
+                    }
                 } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                     root.launchApp(appGrid.model[appGrid.currentIndex]);
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Backspace) {
                     searchInput.forceActiveFocus();
+                    // Move cursor to end and delete
+                    searchInput.cursorPosition = searchInput.text.length;
                     searchInput.text = searchInput.text.slice(0, -1);
                     event.accepted = true;
                 } else if (event.text !== "" && event.modifiers === Qt.NoModifier && 

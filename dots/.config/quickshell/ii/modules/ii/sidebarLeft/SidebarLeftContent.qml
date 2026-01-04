@@ -1,3 +1,4 @@
+import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -6,8 +7,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Qt.labs.synchronizer
+import qs.modules.ii.sidebarLeft.tools
 
-Item {
+FocusScope {
     id: root
     required property var scopeRoot
     property int sidebarPadding: 10
@@ -18,24 +20,67 @@ Item {
     property bool animeCloset: Config.options.policies.weeb === 2
     property var tabButtonList: [
         {"icon": "apps", "name": Translation.tr("Apps")},
+        {"icon": "build", "name": Translation.tr("Tools")},
         ...(root.aiChatEnabled ? [{"icon": "neurology", "name": Translation.tr("Intelligence")}] : []),
         ...(root.translatorEnabled ? [{"icon": "translate", "name": Translation.tr("Translator")}] : []),
         ...((root.animeEnabled && !root.animeCloset) ? [{"icon": "bookmark_heart", "name": Translation.tr("Anime")}] : [])
     ]
     property int tabCount: swipeView.count
 
+    Component.onCompleted: {
+        // Initial setup based on requested tab
+        if (GlobalStates.sidebarRequestedTab === "tools") {
+            tabBar.currentIndex = 1;
+        } else {
+            tabBar.currentIndex = 0;
+        }
+    }
+
+    Connections {
+        target: GlobalStates
+        function onSidebarRequestedTabChanged() {
+            if (GlobalStates.sidebarRequestedTab === "tools") {
+                tabBar.currentIndex = 1;
+            } else if (GlobalStates.sidebarRequestedTab === "") {
+                tabBar.currentIndex = 0;
+            }
+        }
+        function onSidebarLeftOpenChanged() {
+            if (!GlobalStates.sidebarLeftOpen) {
+                // Visual reset
+                tabBar.currentIndex = 0;
+            } else {
+                // Ensure we are on the correct tab when opening
+                if (GlobalStates.sidebarRequestedTab === "tools") {
+                    tabBar.currentIndex = 1;
+                } else {
+                    tabBar.currentIndex = 0;
+                }
+            }
+        }
+    }
+
     function focusActiveItem() {
-        swipeView.currentItem.forceActiveFocus()
+        if (swipeView.currentItem) {
+            swipeView.currentItem.forceActiveFocus();
+        }
     }
 
     Keys.onPressed: (event) => {
-        if (event.modifiers === Qt.ControlModifier) {
+        if (event.key === Qt.Key_Tab) {
+            if (event.modifiers === Qt.ShiftModifier) {
+                tabBar.decrementCurrentIndex();
+            } else {
+                tabBar.incrementCurrentIndex();
+            }
+            event.accepted = true;
+        } else if (event.modifiers === Qt.ControlModifier) {
             if (event.key === Qt.Key_PageDown) {
-                swipeView.incrementCurrentIndex()
+                tabBar.incrementCurrentIndex();
                 event.accepted = true;
             }
             else if (event.key === Qt.Key_PageUp) {
-                swipeView.decrementCurrentIndex()
+                tabBar.decrementCurrentIndex();
                 event.accepted = true;
             }
         }
@@ -55,7 +100,12 @@ Item {
                 id: tabBar
                 Layout.alignment: Qt.AlignHCenter
                 tabButtonList: root.tabButtonList
-                currentIndex: swipeView.currentIndex
+                // Bidirectional sync
+                onCurrentIndexChanged: {
+                    if (swipeView.currentIndex !== currentIndex) {
+                        swipeView.currentIndex = currentIndex;
+                    }
+                }
             }
         }
 
@@ -65,13 +115,19 @@ Item {
             implicitWidth: swipeView.implicitWidth
             implicitHeight: swipeView.implicitHeight
             radius: Appearance.rounding.normal
-            color: Appearance.colors.colLayer1
+            color: "transparent"
 
             SwipeView { // Content pages
                 id: swipeView
                 anchors.fill: parent
                 spacing: 10
                 currentIndex: tabBar.currentIndex
+                onCurrentIndexChanged: {
+                    if (tabBar.currentIndex !== currentIndex) {
+                        tabBar.currentIndex = currentIndex;
+                    }
+                    root.focusActiveItem();
+                }
 
                 clip: true
                 layer.enabled: true
@@ -85,6 +141,7 @@ Item {
 
                 contentChildren: [
                     appDrawer.createObject(),
+                    tools.createObject(),
                     ...((root.aiChatEnabled || (!root.translatorEnabled && !root.animeEnabled)) ? [aiChat.createObject()] : []),
                     ...(root.translatorEnabled ? [translator.createObject()] : []),
                     ...(root.animeEnabled ? [anime.createObject()] : [])
@@ -94,7 +151,15 @@ Item {
 
         Component {
             id: appDrawer
-            AppDrawer {}
+            AppDrawer {
+                focus: swipeView.currentIndex === 0
+            }
+        }
+        Component {
+            id: tools
+            ToolsContainer {
+                focus: swipeView.currentIndex === 1
+            }
         }
         Component {
             id: aiChat
@@ -108,6 +173,5 @@ Item {
             id: anime
             Anime {}
         }
-        
     }
 }
