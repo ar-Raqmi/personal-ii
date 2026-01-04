@@ -34,7 +34,7 @@ Button {
     property color buttonColor: ColorUtils.transparentize(root.toggled ? 
         (root.hovered ? colBackgroundToggledHover : 
             colBackgroundToggled) :
-        (root.hovered ? colBackgroundHover : 
+        (root.hovered || root.highlighted ? colBackgroundHover : 
             colBackground), root.enabled ? 0 : 1)
     property color rippleColor: root.toggled ? colRippleToggled : colRipple
 

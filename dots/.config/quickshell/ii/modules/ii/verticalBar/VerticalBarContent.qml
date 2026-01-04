@@ -3,18 +3,21 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Services.UPower
+import Quickshell.Services.Mpris
 import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
 import qs.modules.ii.bar as Bar
+import qs.modules.ii.verticalBar
 
 Item { // Bar content region
     id: root
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: Brightness.getMonitorForScreen(screen)
+    property MprisPlayer activePlayer: MprisController.activePlayer
 
     component HorizontalBarSeparator: Rectangle {
         Layout.leftMargin: Appearance.sizes.baseBarHeight / 3
@@ -73,6 +76,53 @@ Item { // Bar content region
                 colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
 
+            RippleButton {
+                id: overviewButton
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: 36
+                implicitHeight: 36
+                buttonRadius: Appearance.rounding.full
+                colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                colBackgroundHover: Appearance.colors.colLayer1Hover
+                colRipple: Appearance.colors.colLayer1Active
+                colBackgroundToggled: Appearance.colors.colSecondaryContainer
+                colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
+                colRippleToggled: Appearance.colors.colSecondaryContainerActive
+                toggled: GlobalStates.overviewOpen
+
+                onPressed: GlobalStates.overviewOpen = !GlobalStates.overviewOpen
+
+                property color colIcon: toggled ? Appearance.m3colors.m3onSecondaryContainer : Appearance.colors.colOnLayer0
+                Behavior on colIcon {
+                    animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                }
+
+                MaterialSymbol {
+                    anchors.centerIn: parent
+                    text: "grid_view"
+                    iconSize: 24
+                    color: overviewButton.colIcon
+                }
+            }
+
+            Bar.Workspaces {
+                id: workspacesWidget
+                vertical: true
+                workspaceButtonWidth: 32
+                Layout.alignment: Qt.AlignHCenter
+                MouseArea {
+                    // Right-click to toggle overview
+                    anchors.fill: parent
+                    acceptedButtons: Qt.RightButton
+
+                    onPressed: event => {
+                        if (event.button === Qt.RightButton) {
+                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
+                        }
+                    }
+                }
+            }
+
             Item {
                 Layout.fillHeight: true
             }
@@ -88,13 +138,8 @@ Item { // Bar content region
         Bar.BarGroup {
             vertical: true
             padding: 8
-            Resources {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
+            visible: activePlayer !== null
             
-            HorizontalBarSeparator {}
-
             VerticalMedia {
                 Layout.fillWidth: true
                 Layout.fillHeight: false
@@ -102,61 +147,39 @@ Item { // Bar content region
         }
 
         HorizontalBarSeparator {
-            visible: Config.options?.bar.borderless
+            visible: Config.options?.bar.borderless && activePlayer !== null
         }
 
         Bar.BarGroup {
-            id: middleCenterGroup
             vertical: true
-            padding: 6
+            padding: 8
 
-            Bar.Workspaces {
-                id: workspacesWidget
-                vertical: true
-                MouseArea {
-                    // Right-click to toggle overview
-                    anchors.fill: parent
-                    acceptedButtons: Qt.RightButton
+            VerticalClockWidget {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
+            }
 
-                    onPressed: event => {
-                        if (event.button === Qt.RightButton) {
-                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                        }
-                    }
-                }
+            HorizontalBarSeparator {}
+
+            VerticalDateWidget {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
             }
         }
 
         HorizontalBarSeparator {
-            visible: Config.options?.bar.borderless
+            visible: Config.options?.bar.borderless && Battery.available
         }
 
         Bar.BarGroup {
             vertical: true
             padding: 8
             
-            VerticalClockWidget {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-
-            HorizontalBarSeparator {}
-
-            VerticalDateWidget {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-
-            HorizontalBarSeparator {
-                visible: Battery.available
-            }
-
             BatteryIndicator {
                 visible: Battery.available
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
-            
         }
     }
 
