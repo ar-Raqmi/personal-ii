@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>{ contributing fork }</h1>
+    <h1>{ personal config }</h1>
     <h3>random testing on end_4's dots.</h3>
 </div>
 
