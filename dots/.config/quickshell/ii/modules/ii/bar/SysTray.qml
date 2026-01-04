@@ -64,7 +64,7 @@ Item {
         id: gridLayout
         columns: root.vertical ? 1 : -1
         anchors.fill: parent
-        rowSpacing: 8
+        rowSpacing: 12
         columnSpacing: 15
 
         RippleButton {
