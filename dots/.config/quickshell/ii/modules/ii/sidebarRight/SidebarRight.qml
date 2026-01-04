@@ -1,6 +1,7 @@
 import qs
 import qs.services
 import qs.modules.common
+import qs.modules.common.widgets
 import QtQuick
 import Quickshell.Io
 import Quickshell
@@ -23,13 +24,17 @@ Scope {
         implicitWidth: sidebarWidth
         WlrLayershell.namespace: "quickshell:sidebarRight"
         // Hyprland 0.49: Focus is always exclusive and setting this breaks mouse focus grab
-        // WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        // WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         color: "transparent"
 
         anchors {
             top: true
-            right: true
+            left: true
             bottom: true
+        }
+
+        mask: Region {
+            item: sidebarRightBackground
         }
 
         onVisibleChanged: {
@@ -46,26 +51,44 @@ Scope {
             }
         }
 
-        Loader {
-            id: sidebarContentLoader
-            active: GlobalStates.sidebarRightOpen || Config?.options.sidebar.keepRightSidebarLoaded
-            anchors {
-                fill: parent
-                margins: Appearance.sizes.hyprlandGapsOut
-                leftMargin: Appearance.sizes.elevationMargin
-            }
+        // Content
+        StyledRectangularShadow {
+            target: sidebarRightBackground
+            radius: sidebarRightBackground.radius
+        }
+        Rectangle {
+            id: sidebarRightBackground
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: Appearance.sizes.hyprlandGapsOut
+            anchors.leftMargin: Appearance.sizes.hyprlandGapsOut
             width: sidebarWidth - Appearance.sizes.hyprlandGapsOut - Appearance.sizes.elevationMargin
             height: parent.height - Appearance.sizes.hyprlandGapsOut * 2
+            color: Appearance.colors.colLayer0
+            border.width: 1
+            border.color: Appearance.colors.colLayer0Border
+            radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
 
-            focus: GlobalStates.sidebarRightOpen
-            Keys.onPressed: event => {
-                if (event.key === Qt.Key_Escape) {
-                    panelWindow.hide();
+            Loader {
+                id: sidebarContentLoader
+                active: GlobalStates.sidebarRightOpen || Config?.options.sidebar.keepRightSidebarLoaded
+                anchors.fill: parent
+
+                focus: GlobalStates.sidebarRightOpen
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Escape) {
+                        panelWindow.hide();
+                    }
                 }
-            }
 
-            sourceComponent: SidebarRightContent {}
+                sourceComponent: sidebarRightContentComponent
+            }
         }
+    }
+
+    Component {
+        id: sidebarRightContentComponent
+        SidebarRightContent {}
     }
 
     IpcHandler {

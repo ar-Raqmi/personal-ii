@@ -231,7 +231,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 25
                     height: 25
-                    source: SystemInfo.distroIcon
+                    source: "miuLogo.svg" //SystemInfo.distroIcon
                     colorize: true
                     color: Appearance.colors.colOnLayer0
                 }
