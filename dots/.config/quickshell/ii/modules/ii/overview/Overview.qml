@@ -72,8 +72,9 @@ Scope {
             id: columnLayout
             visible: GlobalStates.overviewOpen
             anchors {
-                horizontalCenter: parent.horizontalCenter
                 top: parent.top
+                left: parent.left
+                leftMargin: Appearance.sizes.hyprlandGapsOut - 10
             }
             spacing: -8
 
@@ -91,7 +92,7 @@ Scope {
 
             SearchWidget {
                 id: searchWidget
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.left: parent.left
                 Synchronizer on searchingText {
                     property alias source: panelWindow.searchingText
                 }
@@ -99,7 +100,7 @@ Scope {
 
             Loader {
                 id: overviewLoader
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.left: parent.left
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
                 sourceComponent: OverviewWidget {
                     screen: panelWindow.screen
