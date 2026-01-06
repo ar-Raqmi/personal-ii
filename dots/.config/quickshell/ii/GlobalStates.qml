@@ -21,6 +21,8 @@ Singleton {
     property bool overviewOpen: false
     property bool regionSelectorOpen: false
     property bool searchOpen: false
+    property string sidebarRequestedTab: ""
+    property string sidebarSearchText: ""
     property bool screenLocked: false
     property bool screenLockContainsCharacters: false
     property bool screenUnlockFailed: false

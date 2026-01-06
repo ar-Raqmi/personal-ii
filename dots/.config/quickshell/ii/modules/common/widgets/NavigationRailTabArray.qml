@@ -14,7 +14,7 @@ Item {
 
     Rectangle {
         property real itemHeight: tabBarColumn.children[0]?.baseSize ?? 56
-        property real baseHighlightHeight: tabBarColumn.children[0]?.baseHighlightHeight ?? 56
+        property real baseHighlightHeight: tabBarColumn.children[0]?.baseHighlightHeight ?? 32
         anchors {
             top: tabBarColumn.top
             left: tabBarColumn.left
@@ -23,9 +23,17 @@ Item {
         radius: Appearance.rounding.full
         color: Appearance.colors.colSecondaryContainer
         implicitHeight: root.expanded ? itemHeight : baseHighlightHeight
-        implicitWidth: tabBarColumn?.children[root.currentIndex]?.visualWidth ?? 100
+        // Fixed: Use baseSize (56) when not expanded to get the perfect pill shape like sidebarRight
+        implicitWidth: root.expanded ? (tabBarColumn?.children[root.currentIndex]?.visualWidth ?? 100) : (tabBarColumn?.children[root.currentIndex]?.baseSize ?? 56)
 
         Behavior on anchors.topMargin {
+            NumberAnimation {
+                duration: Appearance.animationCurves.expressiveFastSpatialDuration
+                easing.type: Appearance.animation.elementMove.type
+                easing.bezierCurve: Appearance.animationCurves.expressiveFastSpatial
+            }
+        }
+        Behavior on implicitWidth {
             NumberAnimation {
                 duration: Appearance.animationCurves.expressiveFastSpatialDuration
                 easing.type: Appearance.animation.elementMove.type
