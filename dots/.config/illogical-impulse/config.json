@@ -37,7 +37,7 @@
             "automatic": true,
             "backgroundTransparency": 0.11,
             "contentTransparency": 0.57,
-            "enable": true
+            "enable": false
         },
         "wallpaperTheming": {
             "enableAppsAndShell": true,
@@ -73,7 +73,7 @@
         "hideWhenFullscreen": true,
         "parallax": {
             "autoVertical": false,
-            "enableSidebar": true,
+            "enableSidebar": false,
             "enableWorkspace": false,
             "vertical": false,
             "widgetsFactor": 1.2,
@@ -142,7 +142,7 @@
         },
         "borderless": true,
         "bottom": false,
-        "cornerStyle": 0,
+        "cornerStyle": 2,
         "floatStyleShadow": true,
         "indicators": {
             "notifications": {
@@ -164,7 +164,7 @@
         },
         "topLeftIcon": "spark",
         "utilButtons": {
-            "showColorPicker": false,
+            "showColorPicker": true,
             "showDarkModeToggle": false,
             "showKeyboardToggle": false,
             "showMicToggle": false,
@@ -176,7 +176,7 @@
         "vertical": true,
         "weather": {
             "city": "",
-            "enable": false,
+            "enable": true,
             "enableGPS": true,
             "fetchInterval": 10,
             "useUSCS": false
