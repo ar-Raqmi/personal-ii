@@ -55,7 +55,7 @@ FocusScope {
 
     Timer {
         id: focusTimer
-        interval: 100 // Increased delay for better reliability
+        interval: 10
         onTriggered: searchInput.forceActiveFocus()
     }
 
@@ -95,7 +95,6 @@ FocusScope {
                     verticalAlignment: TextInput.AlignVCenter
                     
                     Text {
-                        text: Translation.tr("Search apps...")
                         font: parent.font
                         color: Appearance.colors.colSubtext
                         visible: !parent.text && !parent.activeFocus
@@ -104,13 +103,20 @@ FocusScope {
                     onTextChanged: root.query = text
 
                     Keys.onPressed: (event) => {
-                        if (event.key === Qt.Key_Down) {
-                            if (appGrid.count > 0) {
-                                appGrid.forceActiveFocus();
+                        if (appGrid.count > 0) {
+                            if (event.key === Qt.Key_Down) {
+                                appGrid.moveCurrentIndexDown();
                                 event.accepted = true;
-                            }
-                        } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                            if (appGrid.count > 0) {
+                            } else if (event.key === Qt.Key_Up) {
+                                appGrid.moveCurrentIndexUp();
+                                event.accepted = true;
+                            } else if (event.key === Qt.Key_Right) {
+                                appGrid.moveCurrentIndexRight();
+                                event.accepted = true;
+                            } else if (event.key === Qt.Key_Left) {
+                                appGrid.moveCurrentIndexLeft();
+                                event.accepted = true;
+                            } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
                                 root.launchApp(appGrid.model[appGrid.currentIndex]);
                                 event.accepted = true;
                             }

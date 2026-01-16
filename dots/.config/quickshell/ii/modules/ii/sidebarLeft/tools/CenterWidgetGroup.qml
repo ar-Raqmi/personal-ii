@@ -107,7 +107,6 @@ FocusScope {
                         verticalAlignment: TextInput.AlignVCenter
                         
                         Text {
-                            text: Translation.tr("Search...")
                             font: parent.font
                             color: Appearance.colors.colSubtext
                             visible: !parent.text && !parent.activeFocus
@@ -131,7 +130,7 @@ FocusScope {
 
                         Timer {
                             id: focusGrabTimer
-                            interval: 50
+                            interval: 10
                             onTriggered: {
                                 searchInput.forceActiveFocus();
                                 searchInput.cursorPosition = searchInput.text.length;
@@ -139,18 +138,22 @@ FocusScope {
                         }
 
                         Keys.onPressed: (event) => {
-                            if (event.key === Qt.Key_Down && resultsList.count > 0) {
-                                resultsList.focus = true;
-                                resultsList.currentIndex = 0;
-                                event.accepted = true;
-                            } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                                if (resultsList.count > 0) {
-                                    let firstItem = resultsList.itemAtIndex(0);
+                            if (resultsList.count > 0) {
+                                if (event.key === Qt.Key_Down) {
+                                    resultsList.incrementCurrentIndex();
+                                    event.accepted = true;
+                                } else if (event.key === Qt.Key_Up) {
+                                    resultsList.decrementCurrentIndex();
+                                    event.accepted = true;
+                                } else if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
+                                    event.accepted = true;
+                                } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                                    let firstItem = resultsList.itemAtIndex(resultsList.currentIndex);
                                     if (firstItem && firstItem.mouseArea) {
                                         firstItem.mouseArea.clicked(null);
                                     }
+                                    event.accepted = true;
                                 }
-                                event.accepted = true;
                             }
                         }
                     }
@@ -200,7 +203,7 @@ FocusScope {
                         width: ListView.view.width
                         entry: modelData
                         query: StringUtils.cleanOnePrefix(GlobalStates.sidebarSearchText, [Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch])
-                        highlighted: resultsList.currentIndex === index && resultsList.activeFocus
+                        highlighted: resultsList.currentIndex === index
                         
                         // Animation from overview
                         opacity: 0
@@ -218,6 +221,8 @@ FocusScope {
                     Keys.onPressed: (event) => {
                         if (event.key === Qt.Key_Up && resultsList.currentIndex === 0) {
                             searchInput.forceActiveFocus();
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
                             event.accepted = true;
                         } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
                             let currentItem = resultsList.currentItem;
@@ -265,7 +270,6 @@ FocusScope {
                     }
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Translation.tr("Search...")
                         font.pixelSize: Appearance.font.pixelSize.large
                         color: Appearance.colors.colOnLayer1
                     }
