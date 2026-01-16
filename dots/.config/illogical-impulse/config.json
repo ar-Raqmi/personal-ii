@@ -164,7 +164,7 @@
         },
         "topLeftIcon": "miuLogo",
         "utilButtons": {
-            "showColorPicker": true,
+            "showColorPicker": false,
             "showDarkModeToggle": false,
             "showKeyboardToggle": false,
             "showMicToggle": false,
@@ -188,7 +188,7 @@
             ],
             "showAppIcons": true,
             "showNumberDelay": 300,
-            "shown": 10,
+            "shown": 5,
             "useNerdFont": false
         }
     },
@@ -321,12 +321,12 @@
     },
     "overview": {
         "centerIcons": false,
-        "columns": 2,
+        "columns": 1,
         "enable": true,
         "orderBottomUp": false,
         "orderRightLeft": false,
         "rows": 5,
-        "scale": 0.17
+        "scale": 0.19
     },
     "panelFamily": "ii",
     "policies": {
@@ -359,10 +359,10 @@
         "updateInterval": 3000
     },
     "screenRecord": {
-        "savePath": "/home/rezephyr/Videos"
+        "savePath": "$HOME/Videos"
     },
     "screenSnip": {
-        "savePath": "/home/rezephyr/Pictures/Screenshots/"
+        "savePath": "$HOME/Pictures/Screenshots/"
     },
     "search": {
         "engineBaseUrl": "https://www.google.com/search?q=",

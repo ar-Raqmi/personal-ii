@@ -9,6 +9,12 @@
 /home/rezephyr/.config/foot/foot.ini
 /home/rezephyr/.config/fuzzel/fuzzel.ini
 /home/rezephyr/.config/fuzzel/fuzzel_theme.ini
+/home/rezephyr/.config/hypr/custom/env.conf
+/home/rezephyr/.config/hypr/custom/execs.conf
+/home/rezephyr/.config/hypr/custom/general.conf
+/home/rezephyr/.config/hypr/custom/keybinds.conf
+/home/rezephyr/.config/hypr/custom/rules.conf
+/home/rezephyr/.config/hypr/custom/scripts/__restore_video_wallpaper.sh
 /home/rezephyr/.config/hypr/hypridle.conf
 /home/rezephyr/.config/hypr/hypridle.conf.new
 /home/rezephyr/.config/hypr/hyprland/colors.conf
@@ -313,6 +319,7 @@
 /home/rezephyr/.config/quickshell/ii/assets/icons/linux-symbolic.svg
 /home/rezephyr/.config/quickshell/ii/assets/icons/microsoft-symbolic.svg
 /home/rezephyr/.config/quickshell/ii/assets/icons/mistral-symbolic.svg
+/home/rezephyr/.config/quickshell/ii/assets/icons/miuLogo.svg
 /home/rezephyr/.config/quickshell/ii/assets/icons/nixos-symbolic.svg
 /home/rezephyr/.config/quickshell/ii/assets/icons/nyarch-symbolic.svg
 /home/rezephyr/.config/quickshell/ii/assets/icons/ollama-symbolic.svg
@@ -611,6 +618,7 @@
 /home/rezephyr/.config/quickshell/ii/modules/ii/polkit/PolkitContent.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/polkit/Polkit.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/regionSelector/CircleSelectionDetails.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/regionSelector/CursorGuide.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/regionSelector/OptionsToolbar.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/regionSelector/RectCornersSelectionDetails.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/regionSelector/RegionFunctions.qml
@@ -634,10 +642,17 @@
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/Anime.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/ApiCommandButton.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/ApiInputBoxIndicator.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/AppDrawer.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/Calculator.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/DescriptionBox.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/ScrollToBottomButton.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/SearchItem.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/SidebarLeftContent.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/SidebarLeft.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/tools/BottomWidgetGroup.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/tools/CenterWidgetGroup.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/Tools.qml.bak
+/home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/tools/ToolsContainer.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/translator/LanguageSelectorButton.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/Translator.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/sidebarLeft/translator/TextCanvas.qml
@@ -705,6 +720,8 @@
 /home/rezephyr/.config/quickshell/ii/modules/ii/verticalBar/VerticalClockWidget.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/verticalBar/VerticalDateWidget.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/verticalBar/VerticalMedia.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/verticalBar/VerticalUtilButtons.qml
+/home/rezephyr/.config/quickshell/ii/modules/ii/verticalBar/VerticalWeatherWidget.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml
 /home/rezephyr/.config/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml
@@ -953,10 +970,13 @@
 /home/rezephyr/.config/quickshell/ii/services/Ydotool.qml
 /home/rezephyr/.config/quickshell/ii/settings.qml
 /home/rezephyr/.config/quickshell/ii/shell.qml
+/home/rezephyr/.config/quickshell/ii/translations/de_DE.json
 /home/rezephyr/.config/quickshell/ii/translations/en_US.json
 /home/rezephyr/.config/quickshell/ii/translations/he_HE.json
+/home/rezephyr/.config/quickshell/ii/translations/id_ID.json
 /home/rezephyr/.config/quickshell/ii/translations/it_IT.json
 /home/rezephyr/.config/quickshell/ii/translations/ja_JP.json
+/home/rezephyr/.config/quickshell/ii/translations/pt_BR.json
 /home/rezephyr/.config/quickshell/ii/translations/ru_RU.json
 /home/rezephyr/.config/quickshell/ii/translations/tools/guide/translation-tools-guide.md
 /home/rezephyr/.config/quickshell/ii/translations/tools/guide/translation-tools-guide-zh_CN.md
@@ -977,6 +997,7 @@
 /home/rezephyr/.config/zshrc.d/auto-Hypr.sh
 /home/rezephyr/.config/zshrc.d/dots-hyprland.zsh
 /home/rezephyr/.config/zshrc.d/shortcuts.zsh
+/home/rezephyr/.local/share/fonts/illogical-impulse-google-sans-flex
 /home/rezephyr/.local/share/fonts/illogical-impulse-google-sans-flex/.git/config
 /home/rezephyr/.local/share/fonts/illogical-impulse-google-sans-flex/.git/description
 /home/rezephyr/.local/share/fonts/illogical-impulse-google-sans-flex/.git/FETCH_HEAD
