@@ -34,12 +34,6 @@ FocusScope {
         }
         focusGrabTimer.restart();
     }
-    
-    onActiveFocusChanged: {
-        if (activeFocus) {
-            focusGrabTimer.restart();
-        }
-    }
 
     Rectangle {
         id: background
