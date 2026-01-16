@@ -57,6 +57,7 @@ ShellRoot {
         component: WaffleFamily {}
     }
 
+    SidebarCoordinator {}
 
     // Shortcuts
     IpcHandler {
