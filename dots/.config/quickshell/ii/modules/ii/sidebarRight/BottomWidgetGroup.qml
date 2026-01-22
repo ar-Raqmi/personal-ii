@@ -36,6 +36,12 @@ Rectangle {
             "icon": "schedule",
             "widget": "pomodoro/PomodoroWidget.qml"
         },
+        {
+            "type": "calculator",
+            "name": Translation.tr("Calculator"),
+            "icon": "calculate",
+            "widget": "calculator/Calculator.qml"
+        },
     ]
 
     Behavior on implicitHeight {

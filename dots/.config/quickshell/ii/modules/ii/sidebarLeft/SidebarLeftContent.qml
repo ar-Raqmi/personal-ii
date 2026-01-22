@@ -7,7 +7,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Qt.labs.synchronizer
-import qs.modules.ii.sidebarLeft.tools
 
 FocusScope {
     id: root
@@ -20,7 +19,6 @@ FocusScope {
     property bool animeCloset: Config.options.policies.weeb === 2
     property var tabButtonList: [
         {"icon": "apps", "name": Translation.tr("Apps")},
-        {"icon": "build", "name": Translation.tr("Tools")},
         ...(root.aiChatEnabled ? [{"icon": "neurology", "name": Translation.tr("Intelligence")}] : []),
         ...(root.translatorEnabled ? [{"icon": "translate", "name": Translation.tr("Translator")}] : []),
         ...((root.animeEnabled && !root.animeCloset) ? [{"icon": "bookmark_heart", "name": Translation.tr("Anime")}] : [])
@@ -29,19 +27,13 @@ FocusScope {
 
     Component.onCompleted: {
         // Initial setup based on requested tab
-        if (GlobalStates.sidebarRequestedTab === "tools") {
-            tabBar.currentIndex = 1;
-        } else {
-            tabBar.currentIndex = 0;
-        }
+        tabBar.currentIndex = 0;
     }
 
     Connections {
         target: GlobalStates
         function onSidebarRequestedTabChanged() {
-            if (GlobalStates.sidebarRequestedTab === "tools") {
-                tabBar.currentIndex = 1;
-            } else if (GlobalStates.sidebarRequestedTab === "") {
+            if (GlobalStates.sidebarRequestedTab === "") {
                 tabBar.currentIndex = 0;
             }
         }
@@ -50,12 +42,7 @@ FocusScope {
                 // Visual reset
                 tabBar.currentIndex = 0;
             } else {
-                // Ensure we are on the correct tab when opening
-                if (GlobalStates.sidebarRequestedTab === "tools") {
-                    tabBar.currentIndex = 1;
-                } else {
-                    tabBar.currentIndex = 0;
-                }
+                tabBar.currentIndex = 0;
             }
         }
     }
@@ -142,7 +129,6 @@ FocusScope {
 
                 contentChildren: [
                     appDrawer.createObject(),
-                    tools.createObject(),
                     ...((root.aiChatEnabled || (!root.translatorEnabled && !root.animeEnabled)) ? [aiChat.createObject()] : []),
                     ...(root.translatorEnabled ? [translator.createObject()] : []),
                     ...((root.tabButtonList.length === 0 || (!root.aiChatEnabled && !root.translatorEnabled && root.animeCloset)) ? [placeholder.createObject()] : []),
@@ -155,12 +141,6 @@ FocusScope {
             id: appDrawer
             AppDrawer {
                 focus: swipeView.currentIndex === 0
-            }
-        }
-        Component {
-            id: tools
-            ToolsContainer {
-                focus: swipeView.currentIndex === 1
             }
         }
         Component {

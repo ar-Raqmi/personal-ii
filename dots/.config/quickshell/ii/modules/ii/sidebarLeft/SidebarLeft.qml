@@ -207,24 +207,6 @@ Scope { // Scope
             GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen
         }
 
-        function search(): void {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = "";
-            GlobalStates.sidebarLeftOpen = true;
-        }
-
-        function clipboard(): void {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = Config.options.search.prefix.clipboard;
-            GlobalStates.sidebarLeftOpen = true;
-        }
-
-        function emoji(): void {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = Config.options.search.prefix.emojis;
-            GlobalStates.sidebarLeftOpen = true;
-        }
-
         function close(): void {
             GlobalStates.sidebarLeftOpen = false
         }
@@ -240,36 +222,6 @@ Scope { // Scope
 
         onPressed: {
             GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
-        }
-    }
-
-    GlobalShortcut {
-        name: "searchToggle"
-        description: "Opens sidebar tools"
-        onPressed: {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = "";
-            GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
-        }
-    }
-
-    GlobalShortcut {
-        name: "overviewClipboardToggle"
-        description: "Toggle clipboard query on sidebar"
-        onPressed: {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = Config.options.search.prefix.clipboard;
-            GlobalStates.sidebarLeftOpen = true;
-        }
-    }
-
-    GlobalShortcut {
-        name: "overviewEmojiToggle"
-        description: "Toggle emoji query on sidebar"
-        onPressed: {
-            GlobalStates.sidebarRequestedTab = "tools";
-            GlobalStates.sidebarSearchText = Config.options.search.prefix.emojis;
-            GlobalStates.sidebarLeftOpen = true;
         }
     }
 
