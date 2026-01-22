@@ -17,7 +17,7 @@ import qs.modules.ii.sidebarRight.nightLight
 import qs.modules.ii.sidebarRight.volumeMixer
 import qs.modules.ii.sidebarRight.wifiNetworks
 
-Item {
+FocusScope {
     id: root
     property int sidebarWidth: Appearance.sizes.sidebarWidth
     property int sidebarPadding: 10
@@ -103,6 +103,8 @@ Item {
             }
 
             BottomWidgetGroup {
+                id: bottomWidgetGroup
+                focus: true
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillHeight: false
                 Layout.fillWidth: true

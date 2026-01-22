@@ -1,4 +1,5 @@
 pragma ComponentBehavior: Bound
+import qs
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
@@ -8,15 +9,38 @@ import qs.modules.ii.sidebarRight.pomodoro
 import QtQuick
 import QtQuick.Layouts
 
-Rectangle {
+FocusScope {
     id: root
-    radius: Appearance.rounding.normal
-    color: Appearance.colors.colLayer1
+    property int radius: Appearance.rounding.normal
+    focus: true
+    
+    Rectangle {
+        anchors.fill: parent
+        radius: root.radius
+        color: Appearance.colors.colLayer1
+        z: -1
+    }
+
     clip: true
     implicitHeight: collapsed ? collapsedBottomWidgetGroupRow.implicitHeight : 350
     property int selectedTab: Persistent.states.sidebar.bottomGroup.tab
     property int previousIndex: -1
     property bool collapsed: Persistent.states.sidebar.bottomGroup.collapsed
+
+    function forceFocusToTab() {
+        if (!collapsed && tabStack.item) {
+            tabStack.item.forceActiveFocus();
+        }
+    }
+
+    Connections {
+        target: GlobalStates
+        function onSidebarRightOpenChanged() {
+            if (GlobalStates.sidebarRightOpen) {
+                root.forceFocusToTab();
+            }
+        }
+    }
     property var tabs: [
         {
             "type": "calendar",
@@ -204,6 +228,13 @@ Rectangle {
                 id: tabStack
                 anchors.fill: parent
                 anchors.bottomMargin: -anchors.topMargin
+                focus: true
+
+                onStatusChanged: {
+                    if (status === Loader.Ready) {
+                        root.forceFocusToTab();
+                    }
+                }
 
                 Component.onCompleted: {
                     tabStack.source = root.tabs[root.selectedTab].widget;
