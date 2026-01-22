@@ -105,16 +105,6 @@ Item { // Bar content region
                     workspaceButtonWidth: 32
                     Layout.alignment: Qt.AlignHCenter
                 }
-
-                Bar.BarGroup {
-                    vertical: true
-                    padding: 8
-                    visible: activePlayer !== null
-                    Layout.alignment: Qt.AlignHCenter
-                    VerticalMedia {
-                        Layout.fillWidth: true
-                    }
-                }
             }
         }
     }
@@ -125,6 +115,16 @@ Item { // Bar content region
         anchors.centerIn: parent
         spacing: 4
         z: 10
+
+        Bar.BarGroup {
+            vertical: true
+            padding: 8
+            visible: activePlayer !== null
+            width: Appearance.sizes.verticalBarWidth - 8
+            VerticalMedia {
+                Layout.fillWidth: true
+            }
+        }
 
         Bar.BarGroup {
             vertical: true

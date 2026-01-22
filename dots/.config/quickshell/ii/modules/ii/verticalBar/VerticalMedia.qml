@@ -47,6 +47,7 @@ MouseArea {
         } else if (event.button === Qt.ForwardButton || event.button === Qt.RightButton) {
             activePlayer.next();
         } else if (event.button === Qt.LeftButton) {
+            updateButtonPosition();
             GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen
         }
     }
