@@ -113,7 +113,7 @@ Item { // Bar content region
     Column {
         id: clockSection
         anchors.centerIn: parent
-        spacing: 4
+        spacing: 2
         z: 10
 
         Bar.BarGroup {
@@ -167,11 +167,11 @@ Item { // Bar content region
             ColumnLayout {
                 id: bottomContentColumn
                 width: parent.width
-                spacing: 4
+                spacing: 2
 
                 Bar.BarGroup {
                     vertical: true
-                    padding: 8
+                    padding: 4
                     visible: Config.options.bar.verbose
                     Layout.alignment: Qt.AlignHCenter
                     VerticalUtilButtons {
@@ -181,7 +181,7 @@ Item { // Bar content region
 
                 Bar.BarGroup {
                     vertical: true
-                    padding: 8
+                    padding: 4
                     visible: Config.options.bar.weather.enable
                     Layout.alignment: Qt.AlignHCenter
                     VerticalWeatherWidget {
@@ -191,7 +191,7 @@ Item { // Bar content region
 
                 Bar.BarGroup {
                     vertical: true
-                    padding: 8
+                    padding: 4
                     visible: Battery.available
                     Layout.alignment: Qt.AlignHCenter
                     BatteryIndicator {

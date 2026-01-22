@@ -12,7 +12,7 @@ MouseArea {
     id: root
     property bool hovered: false
     implicitWidth: Appearance.sizes.verticalBarWidth
-    implicitHeight: columnLayout.implicitHeight + 5 * 2
+    implicitHeight: columnLayout.implicitHeight
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     hoverEnabled: !Config.options.bar.tooltips.clickToShow
