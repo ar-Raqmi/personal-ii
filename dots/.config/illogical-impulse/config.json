@@ -80,7 +80,7 @@
             "workspaceZoom": 1.07
         },
         "thumbnailPath": "",
-        "wallpaperPath": "",
+        "wallpaperPath": ".config/quickshell/ii/assets/images/default_wallpaper.png",
         "widgets": {
             "clock": {
                 "cookie": {
@@ -101,14 +101,14 @@
                     "adaptiveAlignment": true,
                     "animateChange": true,
                     "font": {
-                        "family": "Google Sans Flex",
+                        "family": "Space Grotesk",
                         "roundness": 0,
                         "size": 150,
                         "weight": 640.8059284747292,
                         "width": 25
                     },
                     "showDate": true,
-                    "vertical": true
+                    "vertical": false
                 },
                 "enable": true,
                 "placementStrategy": "free",
@@ -156,8 +156,7 @@
             "memoryWarningThreshold": 95,
             "swapWarningThreshold": 85
         },
-        "screenList": [
-        ],
+        "screenList": [],
         "showBackground": true,
         "tooltips": {
             "clickToShow": false
@@ -184,8 +183,7 @@
         "workspaces": {
             "alwaysShowNumbers": false,
             "monochromeIcons": false,
-            "numberMap": [
-            ],
+            "numberMap": [],
             "showAppIcons": true,
             "showNumberDelay": 300,
             "shown": 5,
@@ -225,8 +223,7 @@
         "height": 60,
         "hoverRegionHeight": 2,
         "hoverToReveal": true,
-        "ignoredAppRegexes": [
-        ],
+        "ignoredAppRegexes": [],
         "monochromeIcons": false,
         "pinnedApps": [
             "org.kde.dolphin",
@@ -470,7 +467,7 @@
     "time": {
         "dateFormat": "ddd, dd/MM",
         "dateWithYearFormat": "dd/MM/yyyy",
-        "format": "h:mm ap",
+        "format": "h:mm AP",
         "pomodoro": {
             "breakTime": 300,
             "cyclesBeforeLongBreak": 4,
