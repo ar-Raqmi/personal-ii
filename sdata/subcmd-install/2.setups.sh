@@ -27,6 +27,11 @@ v install-python-packages
 showfun setup_user_group
 v setup_user_group
 
+# Setup hyprpm plugins (hyprbars)
+if [[ ! "${INSTALL_VIA_NIX}" == true ]]; then
+  source ${REPO_ROOT}/sdata/subcmd-install/setup-hyprpm-plugins.sh
+fi
+
 if [[ ! -z $(systemctl --version) ]]; then
   # For Fedora, uinput is required for the virtual keyboard to function, and udev rules enable input group users to utilize it.
   if [[ "$OS_GROUP_ID" == "fedora" ]]; then

@@ -17,7 +17,9 @@ remove_deprecated_dependencies(){
   local list=()
   list+=(illogical-impulse-{microtex,pymyc-aur})
   list+=(hyprland-qtutils)
-  list+=({quickshell,hyprutils,hyprpicker,hyprlang,hypridle,hyprland-qt-support,hyprland-qtutils,hyprlock,xdg-desktop-portal-hyprland,hyprcursor,hyprwayland-scanner,hyprland}-git)
+  list+=(matugen-bin)
+  list+=(hyprland hyprlang hyprutils hyprcursor hyprwayland-scanner)
+  list+=(quickshell-git hyprland-qt-support-git hyprland-qtutils-git)
   for i in ${list[@]};do try sudo pacman --noconfirm -Rdd $i;done
 }
 # NOTE: `implicitize_old_dependencies()` was for the old days when we just switch from dependencies.conf to local PKGBUILDs.
