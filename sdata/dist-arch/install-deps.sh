@@ -104,7 +104,7 @@ metapkgs+=(./sdata/dist-arch/illogical-impulse-quickshell-git)
 # hyprland-git now bundles glaze headers internally
 if pacman -Qq glaze &>/dev/null; then
   printf "${STY_CYAN}[$0]: Removing glaze package (conflicts with hyprland-git bundled headers)${STY_RST}\n"
-  try sudo pacman --noconfirm -Rdd glaze
+  sudo pacman --noconfirm -Rdd glaze
 fi
 
 
