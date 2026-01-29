@@ -100,6 +100,14 @@ metapkgs+=(./sdata/dist-arch/illogical-impulse-quickshell-git)
 [[ -f /usr/share/icons/Bibata-Modern-Classic/index.theme ]] || \
   metapkgs+=(./sdata/dist-arch/illogical-impulse-bibata-modern-classic-bin)
 
+# Remove glaze package if it exists to prevent file conflicts with hyprland-git
+# hyprland-git now bundles glaze headers internally
+if pacman -Qq glaze &>/dev/null; then
+  printf "${STY_CYAN}[$0]: Removing glaze package (conflicts with hyprland-git bundled headers)${STY_RST}\n"
+  try sudo pacman --noconfirm -Rdd glaze
+fi
+
+
 for i in "${metapkgs[@]}"; do
   metainstallflags="--needed"
   $ask && showfun install-local-pkgbuild || metainstallflags="$metainstallflags --noconfirm"
