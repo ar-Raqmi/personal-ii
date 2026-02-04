@@ -85,15 +85,15 @@
             "clock": {
                 "cookie": {
                     "aiStyling": false,
-                    "constantlyRotate": false,
+                    "constantlyRotate": true,
                     "dateInClock": true,
                     "dateStyle": "bubble",
-                    "dialNumberStyle": "full",
-                    "hourHandStyle": "fill",
+                    "dialNumberStyle": "dots",
+                    "hourHandStyle": "hide",
                     "hourMarks": false,
-                    "minuteHandStyle": "medium",
-                    "secondHandStyle": "dot",
-                    "sides": 14,
+                    "minuteHandStyle": "hide",
+                    "secondHandStyle": "hide",
+                    "sides": 12,
                     "timeIndicators": true,
                     "useSineCookie": false
                 },
@@ -111,16 +111,16 @@
                     "vertical": false
                 },
                 "enable": true,
-                "placementStrategy": "free",
+                "placementStrategy": "leastBusy",
                 "quote": {
                     "enable": true,
-                    "text": "✒️the pen hasn't lifted"
+                    "text": "miuOS"
                 },
                 "showOnlyWhenLocked": false,
                 "style": "digital",
-                "styleLocked": "digital",
-                "x": 1339.7578125000002,
-                "y": 619.3984375
+                "styleLocked": "cookie",
+                "x": 379.5703124999999,
+                "y": 291.3867187500002
             },
             "weather": {
                 "enable": false,
@@ -175,7 +175,7 @@
         "vertical": true,
         "weather": {
             "city": "",
-            "enable": true,
+            "enable": false,
             "enableGPS": true,
             "fetchInterval": 10,
             "useUSCS": false
@@ -410,8 +410,8 @@
         "keepRightSidebarLoaded": true,
         "quickSliders": {
             "enable": true,
-            "showBrightness": true,
-            "showMic": false,
+            "showBrightness": false,
+            "showMic": true,
             "showVolume": true
         },
         "quickToggles": {
