@@ -21,6 +21,7 @@ Scope {
         readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
         property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
         visible: GlobalStates.searchOpen
+        WlrLayershell.keyboardFocus: GlobalStates.searchOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
         WlrLayershell.namespace: "quickshell:search"
         WlrLayershell.layer: WlrLayer.Top

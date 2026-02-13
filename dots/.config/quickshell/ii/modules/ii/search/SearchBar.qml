@@ -106,11 +106,20 @@ RowLayout {
         Layout.bottomMargin: 4
         onClicked: {
             GlobalStates.searchOpen = false;
-            Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
+            lensTimer.start();
         }
         text: "image_search"
         StyledToolTip {
             text: Translation.tr("Google Lens")
+        }
+
+        Timer {
+            id: lensTimer
+            interval: 250
+            repeat: false
+            onTriggered: {
+                Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
+            }
         }
     }
 
