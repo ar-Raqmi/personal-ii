@@ -192,6 +192,10 @@ FocusScope {
                 required property var modelData
 
                 onClicked: root.launchApp(modelData)
+                altAction: (event) => {
+                    const pos = appButton.mapToItem(root, event.x, event.y);
+                    contextMenu.open(modelData, pos);
+                }
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -223,5 +227,9 @@ FocusScope {
                 }
             }
         }
+    }
+
+    AppContextMenu {
+        id: contextMenu
     }
 }
