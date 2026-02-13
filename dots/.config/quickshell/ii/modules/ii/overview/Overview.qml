@@ -22,7 +22,7 @@ Scope {
 
         WlrLayershell.namespace: "quickshell:overview"
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         color: "transparent"
 
         mask: Region {
@@ -34,6 +34,12 @@ Scope {
             bottom: true
             left: true
             right: true
+        }
+
+        onVisibleChanged: {
+            if (visible) {
+                columnLayout.forceActiveFocus();
+            }
         }
 
         Connections {
@@ -58,6 +64,7 @@ Scope {
 
         Column {
             id: columnLayout
+            focus: true
             visible: GlobalStates.overviewOpen
             anchors {
                 top: parent.top
