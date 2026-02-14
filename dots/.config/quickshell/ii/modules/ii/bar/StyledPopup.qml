@@ -5,6 +5,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
+import qs
 
 LazyLoader {
     id: root
@@ -13,7 +14,7 @@ LazyLoader {
     default property Item contentItem
     property real popupBackgroundMargin: 0
 
-    active: hoverTarget && hoverTarget.containsMouse
+    active: hoverTarget && hoverTarget.containsMouse && !GlobalStates.sidebarRightOpen
 
     component: PanelWindow {
         id: popupWindow
@@ -43,10 +44,13 @@ LazyLoader {
             }
             top: {
                 if (!Config.options.bar.vertical) return Appearance.sizes.barHeight;
-                return root.QsWindow?.mapFromItem(
+                const mappedY = root.QsWindow?.mapFromItem(
                     root.hoverTarget, 
-                    (root.hoverTarget.height - popupBackground.implicitHeight) / 2, 0
-                ).y;
+                    0, (root.hoverTarget.height - popupBackground.implicitHeight) / 2
+                ).y ?? 0;
+                const screenHeight = root.QsWindow?.window?.screen?.height ?? 9999;
+                const maxY = screenHeight - popupWindow.implicitHeight - Appearance.sizes.hyprlandGapsOut;
+                return Math.max(0, Math.min(mappedY, maxY));
             }
             right: Appearance.sizes.verticalBarWidth
             bottom: Appearance.sizes.barHeight
