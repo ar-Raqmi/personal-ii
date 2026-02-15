@@ -80,7 +80,7 @@
             "workspaceZoom": 1.07
         },
         "thumbnailPath": "",
-        "wallpaperPath": ".config/quickshell/ii/assets/images/default_wallpaper.png",
+        "wallpaperPath": "",
         "widgets": {
             "clock": {
                 "cookie": {
@@ -317,7 +317,7 @@
         "openingZoomAnimation": true
     },
     "overview": {
-        "centerIcons": false,
+        "centerIcons": true,
         "columns": 1,
         "enable": true,
         "orderBottomUp": false,
@@ -489,6 +489,7 @@
     "updates": {
         "adviseUpdateThreshold": 75,
         "checkInterval": 120,
+        "enableCheck": true,
         "stronglyAdviseUpdateThreshold": 200
     },
     "waffles": {
