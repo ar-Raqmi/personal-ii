@@ -48,7 +48,14 @@ Item { // Window
     property real iconToWindowRatio: centerIcons ? 0.35 : 0.15
     property real xwaylandIndicatorToIconRatio: 0.35
     property real iconToWindowRatioCompact: 0.6
-    property string iconPath: Quickshell.iconPath(AppSearch.guessIcon(windowData?.class), "image-missing")
+    property string iconPath: {
+        const icon = AppSearch.guessWindowIcon(windowData);
+        if (icon.startsWith("file://") || icon.startsWith("/")) {
+            const path = icon.startsWith("/") ? "file://" + icon : icon;
+            return Qt.resolvedUrl(path);
+        }
+        return Quickshell.iconPath(icon, "image-missing");
+    }
     property bool compactMode: Appearance.font.pixelSize.smaller * 4 > targetWindowHeight || Appearance.font.pixelSize.smaller * 4 > targetWindowWidth
 
     property bool indicateXWayland: windowData?.xwayland ?? false

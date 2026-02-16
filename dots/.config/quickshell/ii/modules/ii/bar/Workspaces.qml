@@ -208,7 +208,14 @@ Item {
                     implicitWidth: workspaceButtonWidth
                     implicitHeight: workspaceButtonWidth
                     property var biggestWindow: HyprlandData.biggestWindowForWorkspace(button.workspaceValue)
-                    property var mainAppIconSource: Quickshell.iconPath(AppSearch.guessIcon(biggestWindow?.class), "image-missing")
+                    property var mainAppIconSource: {
+                        const icon = AppSearch.guessWindowIcon(biggestWindow);
+                        if (icon.startsWith("file://") || icon.startsWith("/")) {
+                            const path = icon.startsWith("/") ? "file://" + icon : icon;
+                            return Qt.resolvedUrl(path);
+                        }
+                        return Quickshell.iconPath(icon, "image-missing");
+                    }
 
                     StyledText { // Workspace number text
                         opacity: root.showNumbers

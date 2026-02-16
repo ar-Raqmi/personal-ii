@@ -20,6 +20,9 @@ Singleton {
         "wps": "wps-office2019-kprometheus",
         "wpsoffice": "wps-office2019-kprometheus",
         "footclient": "foot",
+        "zen": "zen-browser",
+        "zen-alpha": "zen-browser",
+        "Zen": "zen-browser",
     })
     property var regexSubstitutions: [
         {
@@ -93,6 +96,40 @@ Singleton {
 
     function getUndescoreToKebabAppName(str) {
         return str.toLowerCase().replace(/_/g, "-");
+    }
+
+    function isBrowser(className) {
+        if (!className) return false;
+        const lower = className.toLowerCase();
+        return lower.includes("firefox") || 
+               lower.includes("chrome") || 
+               lower.includes("brave") || 
+               lower.includes("chromium") || 
+               lower.includes("librewolf") || 
+               lower.includes("thorium") || 
+               lower.includes("vivaldi") || 
+               lower.includes("edge") ||
+               lower.includes("waterfox") ||
+               lower.includes("mullvad") ||
+               lower.includes("tor-browser") ||
+               lower.includes("floorp") ||
+               lower.includes("zen");
+    }
+
+    function guessWindowIcon(window) {
+        if (!window) return "image-missing";
+        
+        // Dependency to trigger re-evaluation when icons are downloaded (uses for favicons)
+        const _ = FaviconService.cacheCounter;
+        
+        const className = window.class || window.appId || "";
+        
+        if (isBrowser(className)) {
+            const favicon = FaviconService.getFavicon(window);
+            if (favicon) return favicon;
+        }
+
+        return root.guessIcon(className);
     }
 
     function guessIcon(str) {

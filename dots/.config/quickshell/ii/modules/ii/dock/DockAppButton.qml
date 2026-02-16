@@ -85,6 +85,16 @@ DockButton {
                 active: !root.isSeparator
                 sourceComponent: IconImage {
                     source: Quickshell.iconPath(AppSearch.guessIcon(appToplevel.appId), "image-missing")
+                    //--- I don't know if I actually wanted dock to be individual favicons since it is a grouping. ---//
+                    //--- I'll leave this here for now. ---//
+                    // source: {
+                    //     const icon = appToplevel.toplevels.length > 0 ? AppSearch.guessWindowIcon(appToplevel.toplevels[0]) : AppSearch.guessIcon(appToplevel.appId);
+                    //     if (icon.startsWith("file://") || icon.startsWith("/")) {
+                    //         const path = icon.startsWith("/") ? "file://" + icon : icon;
+                    //         return Qt.resolvedUrl(path);
+                    //     }
+                    //     return Quickshell.iconPath(icon, "image-missing");
+                    // }
                     implicitSize: root.iconSize
                 }
             }
