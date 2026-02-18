@@ -44,7 +44,7 @@ def extract_mappings():
     blacklist = {
         "new", "tab", "private", "browsing", "about", "untitled", "loading", "index", "home",
         "http", "https", "www", "com", "net", "org", "gov", "edu", "io", "ai", "me", "dev", "app",
-        "google", "bing", "yahoo", "search", "engine", "browser", "window", "page"
+        "google", "bing", "yahoo", "search", "engine", "browser", "window", "page", "history"
     }
 
     def clean_keywords(title):

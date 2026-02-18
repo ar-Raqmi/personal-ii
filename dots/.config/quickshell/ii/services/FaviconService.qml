@@ -41,6 +41,31 @@ Singleton {
     property var foundTitles: ({})   // Cache for Title -> Domain (from search)
     property var failedTitles: ({})  // Cache for failed searches
     property int cacheCounter: 0
+
+    // ─── STATIC KNOWLEDGE BASE (Overrides History Bias) ───────────
+    property var staticTitleMap: ({
+        "youtube": "youtube.com",
+        "github": "github.com",
+        "spotify": "spotify.com",
+        "netflix": "netflix.com",
+        "whatsapp": "whatsapp.com",
+        "telegram": "web.telegram.org",
+        "discord": "discord.com",
+        "reddit": "reddit.com",
+        "twitch": "twitch.tv",
+        "amazon": "amazon.com",
+        "twitter": "twitter.com",
+        "x": "twitter.com",
+        "facebook": "facebook.com",
+        "instagram": "instagram.com",
+        "chatgpt": "chatgpt.com",
+        "openai": "openai.com",
+        "notion": "notion.so",
+        "figma": "figma.com",
+        "linear": "linear.app",
+        "slack": "slack.com",
+        "gmail": "mail.google.com"
+    })
     
     signal faviconDownloaded(string domain)
 
@@ -119,7 +144,7 @@ Singleton {
             "online", "offline", "download", "upload", "share", "save", "export", "import",
             "everyone", "official", "best", "top", "latest", "popular", "trending", "featured",
             "all", "the", "for", "and", "with", "your", "our", "this", "that", "from",
-            "error", "loading", "redirect", "submit", "confirm", "verify", "update", "install"
+            "error", "loading", "redirect", "submit", "confirm", "verify", "update", "install", "history"
         ];
 
         const parts = cleanTitle.split(/[\s:|·|—|\||\[|\]|\(|\)|\-]/).filter(p => p.trim().length >= 2);
@@ -131,8 +156,11 @@ Singleton {
                 const kw = parts[i].trim().toLowerCase();
                 if (genericWords.includes(kw)) continue;
 
-                if (titleMap[kw]) {
-                    const dom = titleMap[kw];
+                // Priority: Static Knowledge Base > History Map
+                // This ensures "youtube" -> youtube.com even if history says google.com
+                const dom = root.staticTitleMap[kw] || root.titleMap[kw];
+
+                if (dom) {
                     let score = 100; // Base score for history match
 
                     // Specificity Bonus: More dots = more specific (e.g. drive.google.com vs google.com)
@@ -163,6 +191,9 @@ Singleton {
             // console.log(`[FaviconService] Winner: ${bestDomain} (Score: ${maxScore})`);
             return bestDomain;
         }
+
+        // Search cache AFTER scoring — so scoring always wins over stale search results
+        if (foundTitles[title]) return foundTitles[title];
 
         // TIER 2: Explicit Domains in Title (e.g. hypr.land)
         const domainMatch = cleanTitle.match(/([a-z0-9-]+)\.([a-z]{2,3}(\.[a-z]{2})?|land|nz|ai|io|ly|so|me|dev|app|info|xyz|icu|top|site|online)/i);
@@ -225,12 +256,13 @@ Singleton {
         
         const path = `${rawCacheDir}/${domain}.png`;
         
-        // curl -f: Fail on 404 (don't save empty file)
-        // curl -L: Follow redirects
-        // curl -s: Silent
+        // Multi-source favicon download:
+        // 1. vemetric API (fast, high-res, works for popular sites)
+        // 2. Direct /favicon.ico from the website (accurate for personal/uncommon sites)
+        // 3. Google S2 API (reliable last resort)
         // For this we'll be using vemetric.com API to find favicons
         const download = downloadProcess.createObject(null, {
-            command: ["bash", "-c", `mkdir -p "${rawCacheDir}" && ( [ -f "${path}" ] || curl -f -L -s --max-time 15 "https://favicon.vemetric.com/${domain}?size=128" -o "${path}" )`]
+            command: ["bash", "-c", `mkdir -p "${rawCacheDir}" && ( [ -f "${path}" ] || curl -f -L -s --max-time 10 "https://favicon.vemetric.com/${domain}?size=128" -o "${path}" || curl -f -L -s --max-time 10 "https://${domain}/favicon.ico" -o "${path}" || curl -f -L -s --max-time 10 "https://www.google.com/s2/favicons?domain=${domain}&sz=128" -o "${path}" )`]
         });
         
         download.onExited.connect((exitCode, exitStatus) => {
