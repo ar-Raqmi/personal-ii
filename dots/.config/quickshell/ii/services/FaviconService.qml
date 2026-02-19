@@ -124,7 +124,7 @@ Singleton {
 
     function cleanTitle(title) {
         if (!title) return "";
-        return title.replace(/\s*[-|—|·]\s*(Mozilla Firefox|Brave|Google Chrome|Chromium|Vivaldi|Edge|Zen|Floorp|LibreWolf|Thorium|Waterfox|Mullvad|Tor Browser|Quickshell|Antigravity)\s*$/i, "").trim();
+        return title.replace(/\s*[-|—|·]\s*(Mozilla Firefox|Brave|Google Chrome|Chromium|Vivaldi|Edge|Zen|Floorp|LibreWolf|Thorium|Waterfox|Mullvad|Tor Browser|Chrome|Firefox|Web Browser|Browser|Quickshell|Antigravity)\s*$/i, "").trim();
     }
 
     function extractDomain(url) {
@@ -209,18 +209,30 @@ Singleton {
 
     function loadBridge() {
         if (bridgePath === "") return;
-        const reader = readFileProcess.createObject(null, {
-            path: bridgePath
+        // Check if file exists before reading to avoid spamming warnings
+        const check = checkProcess.createObject(null, {
+            command: ["bash", "-c", `[ -f "${bridgePath}" ] && echo yes || echo no`]
         });
-        reader.onTextChanged.connect(() => {
-            try {
-                const raw = reader.text();
-                root.urlMap = JSON.parse(raw);
-                // console.log(`[FaviconService] Bridge loaded: ${Object.keys(root.urlMap).length} mappings (${raw.length} bytes)`);
-            } catch(e) {
-                // console.log(`[FaviconService] Bridge parse ERROR: ${e}`);
+        check.stdout.onStreamFinished.connect(() => {
+            if (check.stdout.text.trim() !== "yes") {
+                check.destroy();
+                return;
             }
+            const reader = readFileProcess.createObject(null, {
+                path: bridgePath
+            });
+            reader.onTextChanged.connect(() => {
+                try {
+                    const raw = reader.text();
+                    root.urlMap = JSON.parse(raw);
+                    // console.log(`[FaviconService] Bridge loaded: ${Object.keys(root.urlMap).length} mappings (${raw.length} bytes)`);
+                } catch(e) {
+                    // console.log(`[FaviconService] Bridge parse ERROR: ${e}`);
+                }
+            });
+            check.destroy();
         });
+        check.running = true;
     }
 
     function startupScan() {

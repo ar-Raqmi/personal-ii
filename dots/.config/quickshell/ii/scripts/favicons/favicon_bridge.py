@@ -16,52 +16,49 @@ def get_browser_history_paths():
     home = str(Path.home())
     paths = []
     
-    # Chromium-based browsers
-    chromium_dirs = [
-        f"{home}/.config/BraveSoftware/Brave-Browser",
-        f"{home}/.config/google-chrome",
-        f"{home}/.config/chromium",
-        f"{home}/.config/microsoft-edge",
-        f"{home}/.config/thorium",
-        f"{home}/.config/vivaldi",
+    # Base directories to search
+    bases = [
+        os.path.join(home, ".config"),
+        os.path.join(home, ".mozilla"),
+        os.path.join(home, "snap"),
+        os.path.join(home, ".var/app")
     ]
     
-    # Firefox-based browsers
-    firefox_dirs = [
-        f"{home}/.mozilla/firefox",
-        f"{home}/.zen",
-        f"{home}/.floorp",
-        f"{home}/.waterfox",
-        f"{home}/.librewolf",
-    ]
-    
-    for base in chromium_dirs:
+    for base in bases:
         if not os.path.exists(base):
             continue
-        # log(f"Scanning chromium dir: {base}")
+            
+        # log(f"Scanning base dir: {base}")
+        # We use a limited walk to find databases without melting the CPU
         for root, dirs, files in os.walk(base):
+            # Chromium
             if "History" in files:
                 p = os.path.join(root, "History")
-                # log(f"  Found: {p}")
-                paths.append(("chromium", p))
-    
-    for base in firefox_dirs:
-        if not os.path.exists(base):
-            continue
-        # log(f"Scanning firefox dir: {base}")
-        for root, dirs, files in os.walk(base):
+                # Ensure it's actually a browser history file by checking parent path
+                parent = root.lower()
+                if any(x in parent for x in ["chrome", "brave", "chromium", "edge", "vivaldi", "thorium", "opera", "yandex"]):
+                    # log(f"  Found Chromium history: {p}")
+                    paths.append(("chromium", p))
+            
+            # Firefox
             if "places.sqlite" in files:
                 p = os.path.join(root, "places.sqlite")
-                # log(f"  Found: {p}")
-                paths.append(("firefox", p))
-    
+                parent = root.lower()
+                if any(x in parent for x in ["firefox", "mozilla", "zen", "floorp", "waterfox", "librewolf"]):
+                    # log(f"  Found Firefox history: {p}")
+                    paths.append(("firefox", p))
+                    
+            # Optimization: don't go too deep into non-browser folders
+            if len(root.split(os.sep)) - len(base.split(os.sep)) > 5:
+                del dirs[:]
+
     return list(set(paths))
 
 # Browser suffix pattern — must match FaviconService.qml cleanTitle()
 BROWSER_SUFFIX = re.compile(
     r"\s*[-|—|·]\s*(Mozilla Firefox|Brave|Google Chrome|Chromium|Vivaldi|Edge|"
     r"Zen|Floorp|LibreWolf|Thorium|Waterfox|Mullvad|Tor Browser|"
-    r"Quickshell|Antigravity)\s*$",
+    r"Chrome|Firefox|Web Browser|Browser|Quickshell|Antigravity)\s*$",
     re.IGNORECASE
 )
 
@@ -126,8 +123,10 @@ if __name__ == "__main__":
     # log(f"Total mappings: {len(mappings)}")
     
     # Print a few samples
+    # Print a few samples
     for i, (title, url) in enumerate(list(mappings.items())[:5]):
         # log(f"  Sample: \"{title}\" -> {url}")
+        pass
     
     cache_dir = os.path.expanduser("~/.cache/quickshell/favicons")
     os.makedirs(cache_dir, exist_ok=True)
