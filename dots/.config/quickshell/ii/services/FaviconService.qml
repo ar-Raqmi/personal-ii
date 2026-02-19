@@ -51,6 +51,15 @@ Singleton {
     property var downloading: ({})   // Track domains currently being downloaded
     property var failedDomains: ({}) // Domains that failed download (prevent infinite retries)
     property int cacheCounter: 0
+    
+    // Domains for which we have high-quality assets in assets/google/
+    readonly property var officialDomains: [
+        "mail.google.com", "calendar.google.com", "drive.google.com", 
+        "docs.google.com", "sheets.google.com", "slides.google.com",
+        "meet.google.com", "maps.google.com", "gemini.google.com",
+        "youtube.com", "aistudio.google.com", "notebooklm.google.com",
+        "photos.google.com", "m3.material.io"
+    ]
 
     signal faviconDownloaded(string domain)
 
@@ -121,7 +130,7 @@ Singleton {
         
         // TIER 0: Official Assets (Highest Priority)
         const officialPath = "file://" + shellDir + "/assets/google/" + domain + ".png";
-        if (readyDomains[domain + "_official"]) {
+        if (readyDomains[domain + "_official"] || root.officialDomains.includes(domain)) {
              // console.log(`[FaviconService] -> OFFICIAL: ${domain}`);
              return officialPath;
         }
@@ -133,11 +142,11 @@ Singleton {
             return p;
         }
         
-        if (!downloading[domain] && !failedDomains[domain]) {
+        if (!downloading[domain] && !failedDomains[domain] && !root.officialDomains.includes(domain)) {
             // console.log(`[FaviconService] -> DOWNLOADING: ${domain} (url: ${fullUrl || 'none'})`);
             downloadFavicon(domain, fullUrl);
         } else {
-            // console.log(`[FaviconService] -> BLOCKED: ${domain} (downloading: ${!!downloading[domain]}, failed: ${!!failedDomains[domain]})`);
+            // console.log(`[FaviconService] -> BLOCKED: ${domain} (downloading: ${!!downloading[domain]}, failed: ${!!failedDomains[domain]}, official: ${root.officialDomains.includes(domain)})`);
         }
 
         // BRAND FALLBACK (e.g. drive.google.com -> google.com)
@@ -269,7 +278,7 @@ Singleton {
 
     function startupScan() {
         const cleanup = cleanupProcess.createObject(null, {
-            command: ["bash", "-c", `find "${rawCacheDir}" -name "*.png" -not -name ".tmp_*" -type f | while read f; do head -c 5 "$f" | grep -qiE "^(<svg|<\\?xml)" && rm -f "$f" && continue; fsize=$(stat -c%s "$f" 2>/dev/null || echo 0); [ "$fsize" -le 400 ] && rm -f "$f"; [ "$fsize" -eq 17259 ] && [ "$(basename "$f")" != "google.com.png" ] && rm -f "$f"; done`]
+            command: ["bash", "-c", `find "${rawCacheDir}" -name "*.png" -not -name ".tmp_*" -type f | while read f; do head -c 5 "$f" | grep -qiE "^(<svg|<\\?xml)" && rm -f "$f" && continue; fsize=$(stat -c%s "$f" 2>/dev/null || echo 0); [ "$fsize" -le 400 ] && rm -f "$f"; [ "$fsize" -eq 17259 ] && [ "$(basename "$f")" != "google.com.png" ] && rm -f "$f"; done; for d in mail.google.com calendar.google.com drive.google.com docs.google.com sheets.google.com slides.google.com meet.google.com maps.google.com gemini.google.com youtube.com aistudio.google.com notebooklm.google.com photos.google.com m3.material.io; do rm -f "${rawCacheDir}/$d.png"; done`]
         });
         cleanup.onExited.connect(() => {
             const scan = scanProcess.createObject(null, {
