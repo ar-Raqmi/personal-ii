@@ -264,20 +264,34 @@ Singleton {
         downloading[domain] = true;
         
         const path = `${rawCacheDir}/${domain}.png`;
+        const tmpPath = `${rawCacheDir}/.tmp_${domain}.png`;
         
-        // Multi-source favicon download:
+        // Multi-source favicon download with validation:
         // 1. vemetric API (fast, high-res, works for popular sites)
         // 2. Direct /favicon.ico from the website (accurate for personal/uncommon sites)
         // 3. Google S2 API (reliable last resort)
+        // After download, validate the file is not a "dead globe" / "not found" icon:
+        // - Reject SVGs disguised as PNG (vemetric returns SVG for unknown domains)
+        // - Reject known Google S2 "not found" icons (348 bytes, 341 bytes)
+        const validateCmd = [
+            // Check if file is actually SVG (starts with "<svg" or "<?xml")
+            `head -c 5 "${tmpPath}" | grep -qiE "^(<svg|<\\?xml)" && rm -f "${tmpPath}" && exit 1`,
+            // Check for known Google S2 "not found" icon sizes
+            `fsize=$(stat -c%s "${tmpPath}" 2>/dev/null || echo 0)`,
+            `[ "$fsize" -le 400 ] && rm -f "${tmpPath}" && exit 1`,
+            // Passed validation — move to final path
+            `mv "${tmpPath}" "${path}"`
+        ].join("; ");
+        
         const download = downloadProcess.createObject(null, {
-            command: ["bash", "-c", `mkdir -p "${rawCacheDir}" && ( [ -f "${path}" ] || curl -f -L -s --max-time 10 "https://favicon.vemetric.com/${domain}?size=128" -o "${path}" || curl -f -L -s --max-time 10 "https://${domain}/favicon.ico" -o "${path}" || curl -f -L -s --max-time 10 "https://www.google.com/s2/favicons?domain=${domain}&sz=128" -o "${path}" )`]
+            command: ["bash", "-c", `mkdir -p "${rawCacheDir}" && ( [ -f "${path}" ] && exit 0 || curl -f -L -s --max-time 10 "https://favicon.vemetric.com/${domain}?size=128" -o "${tmpPath}" || curl -f -L -s --max-time 10 "https://${domain}/favicon.ico" -o "${tmpPath}" || curl -f -L -s --max-time 10 "https://www.google.com/s2/favicons?domain=${domain}&sz=128" -o "${tmpPath}" ) && ${validateCmd}`]
         });
         
         download.onExited.connect((exitCode, exitStatus) => {
             if (exitCode === 0) {
                 updateReady(domain);
             } else {
-                // console.log(`[FaviconService] Failed to download ${domain} (Exit: ${exitCode})`);
+                // console.log(`[FaviconService] Failed or rejected download for ${domain} (Exit: ${exitCode})`);
                 delete downloading[domain];
             }
         });
@@ -311,37 +325,45 @@ Singleton {
     }
 
     function startupScan() {
-        // Scan BOTH raw cache and official assets
-        const scan = scanProcess.createObject(null, {
-            command: ["bash", "-c", `ls "${rawCacheDir}" 2>/dev/null; echo "---OFFICIAL---"; ls "${shellDir}/assets/google" 2>/dev/null`]
+        // First, clean up any existing bad icons in cache
+        // (SVGs disguised as PNG from vemetric, or tiny Google S2 "not found" icons)
+        const cleanup = cleanupProcess.createObject(null, {
+            command: ["bash", "-c", `find "${rawCacheDir}" -name "*.png" -not -name ".tmp_*" -type f | while read f; do head -c 5 "$f" | grep -qiE "^(<svg|<\\?xml)" && rm -f "$f" && continue; fsize=$(stat -c%s "$f" 2>/dev/null || echo 0); [ "$fsize" -le 400 ] && rm -f "$f"; done`]
         });
+        cleanup.onExited.connect(() => {
+            // After cleanup, scan BOTH raw cache and official assets
+            const scan = scanProcess.createObject(null, {
+                command: ["bash", "-c", `ls "${rawCacheDir}" 2>/dev/null; echo "---OFFICIAL---"; ls "${shellDir}/assets/google" 2>/dev/null`]
+            });
         
-        scan.stdout.onStreamFinished.connect(() => {
-            const output = scan.stdout.text.trim();
-            if (!output) return;
-            
-            const lines = output.split("\n");
-            let temp = {};
-            let isOfficial = false;
-            let offCount = 0;
-            for (const line of lines) {
-                const f = line.trim();
-                if (!f) continue;
-                if (f === "---OFFICIAL---") {
-                    isOfficial = true;
-                    continue;
+            scan.stdout.onStreamFinished.connect(() => {
+                const output = scan.stdout.text.trim();
+                if (!output) return;
+                
+                const lines = output.split("\n");
+                let temp = {};
+                let isOfficial = false;
+                let offCount = 0;
+                for (const line of lines) {
+                    const f = line.trim();
+                    if (!f) continue;
+                    if (f === "---OFFICIAL---") {
+                        isOfficial = true;
+                        continue;
+                    }
+                    if (f.endsWith(".png") && f.length > 4) {
+                        const domain = f.replace(".png", "");
+                        temp[isOfficial ? domain + "_official" : domain] = true;
+                        if (isOfficial) offCount++;
+                    }
                 }
-                if (f.endsWith(".png") && f.length > 4) {
-                    const domain = f.replace(".png", "");
-                    temp[isOfficial ? domain + "_official" : domain] = true;
-                    if (isOfficial) offCount++;
-                }
-            }
-            root.readyDomains = temp;
-            root.cacheCounter++;
-            // console.log(`[FaviconService] Startup scan: ${Object.keys(temp).length} items found (${offCount} official).`);
+                root.readyDomains = temp;
+                root.cacheCounter++;
+                // console.log(`[FaviconService] Startup scan: ${Object.keys(temp).length} items found (${offCount} official).`);
+            });
+            scan.running = true;
         });
-        scan.running = true;
+        cleanup.running = true;
     }
 
     function triggerBridge() {
@@ -402,6 +424,7 @@ Singleton {
     Component { id: downloadProcess; Process { stdout: StdioCollector {} } }
     Component { id: searchProcess; Process { stdout: StdioCollector {} } }
     Component { id: scanProcess; Process { stdout: StdioCollector {} } }
+    Component { id: cleanupProcess; Process {} }
     Component { id: bridgeProcess; Process {} }
     Component { id: readFileProcess; FileView {} }
 }

@@ -24,9 +24,12 @@ IconImage {
     Process {
         id: faviconDownloadProcess
         running: false
-        command: ["bash", "-c", `[ -f ${faviconFilePath} ] || curl -s '${root.faviconUrl}' -o '${faviconFilePath}' -L -H 'User-Agent: ${downloadUserAgent}'`]
+        property string tmpPath: `${faviconDownloadPath}/.tmp_${fileName}`
+        command: ["bash", "-c", `[ -f ${faviconFilePath} ] && exit 0 || curl -s '${root.faviconUrl}' -o '${tmpPath}' -L -H 'User-Agent: ${downloadUserAgent}' && head -c 5 '${tmpPath}' | grep -qiE '^(<svg|<\\?xml)' && rm -f '${tmpPath}' && exit 1; fsize=$(stat -c%s '${tmpPath}' 2>/dev/null || echo 0); [ "$fsize" -le 400 ] && rm -f '${tmpPath}' && exit 1; mv '${tmpPath}' '${faviconFilePath}'`]
         onExited: (exitCode, exitStatus) => {
-            root.urlToLoad = root.faviconFilePath
+            if (exitCode === 0) {
+                root.urlToLoad = root.faviconFilePath
+            }
         }
     }
 
