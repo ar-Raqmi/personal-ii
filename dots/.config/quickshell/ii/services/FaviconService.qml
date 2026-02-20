@@ -203,15 +203,12 @@ Singleton {
         });
         
         download.onExited.connect((exitCode, exitStatus) => {
-            // console.log(`[FaviconService] Download finished: ${domain} exit=${exitCode}`);
             if (exitCode === 0) {
                 updateReady(domain);
             } else {
-                // console.log(`[FaviconService] Download FAILED for ${domain}`);
                 let newDown = Object.assign({}, root.downloading);
                 delete newDown[domain];
                 root.downloading = newDown;
-                // Mark as failed to prevent infinite retries
                 let newFailed = Object.assign({}, root.failedDomains);
                 newFailed[domain] = Date.now();
                 root.failedDomains = newFailed;
